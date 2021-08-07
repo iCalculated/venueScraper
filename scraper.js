@@ -42,6 +42,13 @@ const search_list = async (places, city) => {
     return results;
 }
 
+const convertToCSV = objectArray => {
+    const array = [Object.keys(objectArray[0])].concat(objectArray)
+    return array.map(it => {
+        return Object.values(it).toString()
+    }).join('\n')
+}
+
 const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
@@ -60,7 +67,4 @@ const places = [
 const city = "Austin, TX";
 
 search_list(places.slice(-1), city)
-    .then(results => {
-        results.map(result => {
-            console.log(JSON.stringify(result));
-    })});
+    .then(convertToCSV).then(console.log);
