@@ -7,17 +7,10 @@ if (status.error) {
     throw result.error
 }
 
-const client = yelp.client(process.env.YELP_API_KEY)
-
-const search_term = {
-    name: 'Flamingo Cantina',
-    city: 'Austin, TX',
-};
-
-const search = async (search_term) => {
+const search = async (name, city) => {
     const response = await client.search({
-        term: search_term.name,
-        location: search_term.city, 
+        term: name,
+        location: city, 
         limit: 1,
     });
     const id = response.jsonBody.businesses[0].id;
@@ -25,6 +18,26 @@ const search = async (search_term) => {
     return search_result.jsonBody;
 };
 
-const search_result = search(search_term);
-search_result.then(console.log);
+const client = yelp.client(process.env.YELP_API_KEY)
+
+const places = [
+    "Antones Nightclub",
+    "Summit Rooftop Lounge",
+    "Barbarella ",
+    "Highland Lounge",
+    "Elephant Room",
+    "Flamingo Cantina",
+    "Whislers",
+    "The Roosevelt Room",
+    "Ego's Lounge",
+    "Dirty Bill's ",
+    "Hotel Vegas/Volstead Lounge",
+];
+const city = "Austin, TX";
+
+const search_results = places
+    .map(place => search(place, city)
+    .then(console.log));
+    
+console.log(search_results);
 
