@@ -16,7 +16,7 @@ const search = async (name, city) => {
     const id = response.jsonBody.businesses[0].id;
     const search_result = await client.business(id)
         .then(result => result.jsonBody)
-        .then(({name, location, coordinates, categories, image_url, hours, ...extendedProps})=> {
+        .then(({name, location, coordinates, categories, image_url, hours, phone, price, ...extendedProps})=> {
             return {
                 name,
                 address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
@@ -25,6 +25,7 @@ const search = async (name, city) => {
                 tags: categories.map(tag => tag.alias),
                 hours: hours.filter(hours => hours.hours_type == 'REGULAR')[0].open,
                 image_link: image_url,
+                price,
                 extendedProps
             };
         });
@@ -60,8 +61,6 @@ const city = "Austin, TX";
 
 search_list(places.slice(-1), city)
     .then(results => {
-        results
-
-            .map(result => {
-                console.log(result);
+        results.map(result => {
+            console.log(JSON.stringify(result));
     })});
