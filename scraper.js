@@ -16,15 +16,16 @@ const search = async (name, city) => {
     const id = response.jsonBody.businesses[0].id;
     const search_result = await client.business(id)
         .then(result => result.jsonBody)
-        .then(({name, location, coordinates, categories, image_url, photos, url, phone, display_phone, rating, hours, price})=> {
+        .then(({name, location, coordinates, categories, image_url, hours, ...extendedProps})=> {
             return {
                 name,
                 address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
                 latitude: coordinates.latitude,
                 longitude: coordinates.longitude,
-                tags: categories,
-                hours,
+                tags: categories.map(tag => tag.alias),
+                hours: hours.filter(hours => hours.hours_type == 'REGULAR')[0].open,
                 image_link: image_url,
+                extendedProps
             };
         });
     return search_result
@@ -57,7 +58,10 @@ const places = [
 ];
 const city = "Austin, TX";
 
-search_list(places, city)
-    .then(
-        console.log
-    );
+search_list(places.slice(-1), city)
+    .then(results => {
+        results
+
+            .map(result => {
+                console.log(result);
+    })});
