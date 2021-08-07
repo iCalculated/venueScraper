@@ -14,8 +14,20 @@ const search = async (name, city) => {
         limit: 1,
     });
     const id = response.jsonBody.businesses[0].id;
-    const search_result = await client.business(id);
-    return search_result.jsonBody;
+    const search_result = await client.business(id)
+        .then(result => result.jsonBody)
+        .then(({name, location, coordinates, categories, image_url, photos, url, phone, display_phone, rating, hours, price})=> {
+            return {
+                name,
+                address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                tags: categories,
+                hours,
+                image_link: image_url,
+            };
+        });
+    return search_result
 };
 
 const search_list = async (places, city) => {
