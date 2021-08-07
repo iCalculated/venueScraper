@@ -18,6 +18,16 @@ const search = async (name, city) => {
     return search_result.jsonBody;
 };
 
+const search_list = async (places, city) => {
+    const results = [];
+    for (const place of places) {
+        results.push(
+            await search(place, city)
+        );
+    }
+    return results;
+}
+
 const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
@@ -35,9 +45,7 @@ const places = [
 ];
 const city = "Austin, TX";
 
-const search_results = places
-    .map(place => search(place, city)
-    .then(console.log));
-    
-console.log(search_results);
-
+search_list(places, city)
+    .then(
+        console.log
+    );
