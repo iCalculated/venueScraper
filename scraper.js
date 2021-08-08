@@ -1,6 +1,7 @@
 'use strict';
 
 const yelp = require('yelp-fusion');
+const fs = require('fs');
 const status = require('dotenv').config()
 
 if (status.error) {
@@ -30,15 +31,23 @@ const search_list = async (places, city) => {
 }
 
 const format = ({name, location, categories, hours, image_url, coordinates, price, phone, photos})=> {
-    console.log(hours);
-    const formatted_hours = hours
+    const formatted_hours = Array(7).fill("null");
+
+    hours
         .filter(hours => hours.hours_type == 'REGULAR')[0]
         .open
-        .map(time => `{open: "` + time.start + `", close: "` +time.end +`"}`)
+        .forEach(day_schedule => {
+            formatted_hours[day_schedule.day] = day_schedule.start
+                ? `{open: "` + day_schedule.start + `", close: "` + day_schedule.end +`"}` 
+                : `null`
+        });
+
     return {
         name,
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
-        tags: categories.map(tag => tag.alias),
+        descrption: null,
+        types: null,
+        tags: categories.map(tag => tag.alias).join(","),
         sunday: formatted_hours[6],
         monday: formatted_hours[0],
         tuesday: formatted_hours[1],
@@ -51,7 +60,7 @@ const format = ({name, location, categories, hours, image_url, coordinates, pric
         longitude: coordinates.longitude,
         price,
         phone,
-        photos,
+        photots: photos.join(","),
         //extendedProps
     };
 };
@@ -82,6 +91,15 @@ const places = [
 ];
 const city = "Austin, TX";
 
-search_list(places.slice(-1), city)
+search_list([places[1]], city)
+// don't fill days from 0, use day field
     .then(results => results.map(format))
-    .then(convertToCSV).then(console.log);
+    .then(convertToCSV)
+    .then(csv => {
+        fs.writeFile('./export.csv', csv, err => {
+            if (err) {
+            console.error(err)
+            return
+            }
+        })
+    });
