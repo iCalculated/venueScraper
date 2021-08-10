@@ -4,6 +4,9 @@ const yelp = require('yelp-fusion');
 const fs = require('fs');
 const status = require('dotenv').config()
 const { v4: uuidv4 } = require('uuid');
+var { tzOffsetAt, init: tzInit } = require('tzwhere')
+tzInit();
+
 
 
 if (status.error) {
@@ -71,6 +74,7 @@ const csv_format = ({name, location, categories, hours, image_url, coordinates, 
 
 const format = ({name, location, categories, hours, coordinates, price, phone, photos, id})=> {
     const formatted_hours = Array(7).fill("null");
+    const gmt_offset = tzOffsetAt(coordinates.latitude, coordinates.longitude) / 3600000;
 
     if (hours) {
         hours
@@ -105,7 +109,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
             coordinates: [coordinates.longitude, coordinates.latitude],
         },
         market: location.city + ", " + location.state,
-        gmt_offset: 0,
+        gmt_offset,
         metadata: {
             yelp_id: id,
             price,
