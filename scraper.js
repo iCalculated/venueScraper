@@ -3,6 +3,8 @@
 const yelp = require('yelp-fusion');
 const fs = require('fs');
 const status = require('dotenv').config()
+const { v4: uuidv4 } = require('uuid');
+
 
 if (status.error) {
     throw result.error
@@ -67,7 +69,7 @@ const csv_format = ({name, location, categories, hours, image_url, coordinates, 
     };
 };
 
-const format = ({name, location, categories, hours, image_url, coordinates, price, phone, photos, ...extendedProps})=> {
+const format = ({name, location, categories, hours, coordinates, price, phone, photos, id})=> {
     const formatted_hours = Array(7).fill("null");
 
     if (hours) {
@@ -88,19 +90,25 @@ const format = ({name, location, categories, hours, image_url, coordinates, pric
     }
 
     return {
+        _id: uuidv4(),
+        venue_family: null,
+        on_slide: false,
         name,
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
         description: "TODO",
-        venue_type: "TODO",
-        tags: categories,//.map(tag => tag.alias),
+        venue_type: ["TODO"],
+        tags: categories.map(tag => tag.alias),
+        // this is in the business' timezone
         hours: formatted_hours,
-        image_link: image_url,
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
+        image_links: photos,
+        location: {
+            type: "Point",
+            coordinates: [coordinates.longitude, coordinates.latitude],
+        },
+        market: location.city + ", " + location.state,
         price,
         phone,
-        photos,
-        extendedProps
+        yelp_id: id,
     };
 };
 
