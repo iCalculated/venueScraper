@@ -78,8 +78,8 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
             .open
             .forEach(day_schedule => {
                 formatted_hours[day_schedule.day] = { 
-                    open: day_schedule.start, 
-                    close: day_schedule.end
+                    open: day_schedule.start.slice(0,2) + ":" + day_schedule.start.slice(2), 
+                    close: day_schedule.end.slice(0,2) + ":" + day_schedule.end.slice(2), 
                 };
             });
 
@@ -97,8 +97,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
         description: "TODO",
         venue_type: ["TODO"],
-        tags: categories.map(tag => tag.alias),
-        // this is in the business' timezone
+        // this is (probably) in the business' timezone
         hours: formatted_hours,
         image_links: photos,
         location: {
@@ -106,9 +105,13 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
             coordinates: [coordinates.longitude, coordinates.latitude],
         },
         market: location.city + ", " + location.state,
-        price,
-        phone,
-        yelp_id: id,
+        gmt_offset: 0,
+        metadata: {
+            yelp_id: id,
+            price,
+            phone,
+            tags: categories.map(tag => tag.alias),
+        }
     };
 };
 
