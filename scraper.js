@@ -90,7 +90,9 @@ const format = ({name, location, categories, hours, image_url, coordinates, pric
     return {
         name,
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
-        tags: categories.map(tag => tag.alias),
+        description: "TODO",
+        venue_type: "TODO",
+        tags: categories,//.map(tag => tag.alias),
         hours: formatted_hours,
         image_link: image_url,
         latitude: coordinates.latitude,
