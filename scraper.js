@@ -30,7 +30,7 @@ const search_list = async (places, city) => {
     return results;
 }
 
-const csvFormat = ({name, location, categories, hours, image_url, coordinates, price, phone, photos})=> {
+const csv_format = ({name, location, categories, hours, image_url, coordinates, price, phone, photos})=> {
     const formatted_hours = Array(7).fill("null");
 
     if(hours) {
@@ -90,19 +90,19 @@ const format = ({name, location, categories, hours, image_url, coordinates, pric
     return {
         name,
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
-        tags: categories.map(tag => tag.alias).join(","),
+        tags: categories.map(tag => tag.alias),
         hours: formatted_hours,
         image_link: image_url,
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         price,
         phone,
-        photos: photos.join(","),
+        photos,
         extendedProps
     };
 };
 
-const convertToCSV = objectArray => {
+const convert_to_CSV = objectArray => {
     const array = [Object.keys(objectArray[0])].concat(objectArray)
     return array.map(row => {
         return Object.values(row).map(value => {
@@ -113,17 +113,19 @@ const convertToCSV = objectArray => {
 
 const scrape_to_CSV = (places, city, file) => {
     search_list(places, city)
-        .then(results => results.map(csvFormat))
-        .then(convertToCSV)
-        .then(csv => {
-            fs.writeFile(file, csv, err => {
-                if (err) {
-                console.error(err)
-                return
-                }
-            })
-        });
-}
+        .then(results => results.map(csv_format))
+        .then(convert_to_CSV)
+        .then(text => write_to_file(text, file));
+};
+
+const write_to_file = (content, file) => {
+    fs.writeFile(file, content, err => {
+        if (err) {
+        console.error(err)
+        return
+        }
+    })
+};
 
 const client = yelp.client(process.env.YELP_API_KEY)
 
@@ -142,5 +144,8 @@ const places = [
 ];
 const city = "Austin, TX";
 
-
-scrape_to_CSV(places, city, './export.csv')
+search_list(places, city)
+    .then(results => results.map(format))
+    .then(JSON.stringify)
+    .then(text => write_to_file(text, './test.json'));
+//scrape_to_CSV(places, city, './export.csv')
