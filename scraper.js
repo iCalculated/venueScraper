@@ -72,7 +72,7 @@ const csv_format = ({name, location, categories, hours, image_url, coordinates, 
 
 const format = ({name, location, categories, hours, coordinates, price, phone, photos, id})=> {
     const tags = categories.map(tag => tag.alias);
-    const type_set = new Set(["TODO"]);
+    const type_set = new Set();
     tags.forEach(tag => {
         ["bar","club","lounge","restaurant","garden"]
             .filter(type => tag.includes(type))
@@ -82,7 +82,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
     });
     const venue_type = [...type_set];
 
-    const formatted_hours = Array(7).fill("null");
+    const formatted_hours = Array(7).fill(null);
     if (hours) {
         hours
             .filter(hours => hours.hours_type == 'REGULAR')[0]
@@ -122,7 +122,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         metadata: {
             yelp_id: id,
             price,
-            phone,
+            phone: phone.replace(/[^\d]/g,"").slice(-10),
             tags,
         }
     };
