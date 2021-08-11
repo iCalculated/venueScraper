@@ -107,7 +107,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         venue_family: null,
         on_slide: false,
         name,
-        address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
+        address: location.address1 + ", " + location.city + ", " + location.state + " " + location.zip_code,
         description: "TODO",
         venue_type,
         // this is (probably) in the business' timezone
@@ -173,5 +173,5 @@ const city = "Austin, TX";
 search_list(places, city)
     .then(results => results.map(format))
     .then(JSON.stringify)
-    .then(text => write_to_file(text, './test.json'));
+    .then(text => write_to_file(text, './austin.json'));
 //scrape_to_CSV(places, city, './export.csv')
