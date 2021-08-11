@@ -5,7 +5,13 @@ const fs = require('fs');
 const status = require('dotenv').config()
 const { v4: uuidv4 } = require('uuid');
 var { tzOffsetAt, init: tzInit } = require('tzwhere');
+
+const log = console.log;
+{
+console.log = () => {};
 tzInit();
+}
+console.log = log;
 
 if (status.error) {
     throw result.error
@@ -156,22 +162,18 @@ const write_to_file = (content, file) => {
 const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
-    "Antones Nightclub",
-    "Summit Rooftop Lounge",
-    "Barbarella ",
-    "Highland Lounge",
-    "Elephant Room",
-    "Flamingo Cantina",
-    "Whislers",
-    "The Roosevelt Room",
-    "Ego's Lounge",
-    "Dirty Bill's ",
-    "Hotel Vegas/Volstead Lounge",
+    "E11even",
+    "Club Space",
+    "Twist",
+    "Do Not Sit on the Furniture",
+    "Wall Lounge ",
 ];
-const city = "Austin, TX";
+const city = "Miami, FL";
+
+console.log(`${city}:\n\t${places.join("\n\t")}`);
 
 search_list(places, city)
     .then(results => results.map(format))
     .then(JSON.stringify)
-    .then(text => write_to_file(text, './austin.json'));
+    .then(text => write_to_file(text, './miami.json'));
 //scrape_to_CSV(places, city, './export.csv')
