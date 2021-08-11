@@ -4,10 +4,8 @@ const yelp = require('yelp-fusion');
 const fs = require('fs');
 const status = require('dotenv').config()
 const { v4: uuidv4 } = require('uuid');
-var { tzOffsetAt, init: tzInit } = require('tzwhere')
+var { tzOffsetAt, init: tzInit } = require('tzwhere');
 tzInit();
-
-
 
 if (status.error) {
     throw result.error
@@ -73,9 +71,18 @@ const csv_format = ({name, location, categories, hours, image_url, coordinates, 
 };
 
 const format = ({name, location, categories, hours, coordinates, price, phone, photos, id})=> {
-    const formatted_hours = Array(7).fill("null");
-    const gmt_offset = tzOffsetAt(coordinates.latitude, coordinates.longitude) / 3600000;
+    const tags = categories.map(tag => tag.alias);
+    const type_set = new Set(["TODO"]);
+    tags.forEach(tag => {
+        ["bar","club","lounge","restaurant","garden"]
+            .filter(type => tag.includes(type))
+            .forEach(type => {
+                type_set.add(type[0].toUpperCase() + type.slice(1));
+            })
+    });
+    const venue_type = [...type_set];
 
+    const formatted_hours = Array(7).fill("null");
     if (hours) {
         hours
             .filter(hours => hours.hours_type == 'REGULAR')[0]
@@ -93,6 +100,8 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         );
     }
 
+    const gmt_offset = tzOffsetAt(coordinates.latitude, coordinates.longitude) / 3600000;
+
     return {
         _id: uuidv4(),
         venue_family: null,
@@ -100,7 +109,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         name,
         address: location.address1 + ",\n" + location.city + ", " + location.state + " " + location.zip_code,
         description: "TODO",
-        venue_type: ["TODO"],
+        venue_type,
         // this is (probably) in the business' timezone
         hours: formatted_hours,
         image_links: photos,
@@ -114,7 +123,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
             yelp_id: id,
             price,
             phone,
-            tags: categories.map(tag => tag.alias),
+            tags,
         }
     };
 };
