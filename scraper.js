@@ -23,18 +23,24 @@ const search = async (name, city) => {
         location: city, 
         limit: 1,
     });
-    const id = response.jsonBody.businesses[0].id;
-    const search_result = await client.business(id)
-        .then(result => result.jsonBody);
-    return search_result
+    if (response.jsonBody.businesses[0]) {
+        const id = response.jsonBody.businesses[0].id;
+        const search_result = await client.business(id)
+            .then(result => result.jsonBody);
+        return search_result
+    }
+    else {
+        console.log(`${name} not found.`);
+    }
 };
 
 const search_list = async (places, city) => {
     const results = [];
     for (const place of places) {
-        results.push(
-            await search(place, city)
-        );
+        const result = await search(place, city);
+        if (result) {
+            results.push(result);
+        }
     }
     return results;
 }
@@ -162,13 +168,21 @@ const write_to_file = (content, file) => {
 const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
-    "E11even",
-    "Club Space",
-    "Twist",
-    "Do Not Sit on the Furniture",
-    "Wall Lounge ",
+    "Silk City Diner",
+"The Dolphin Tavern ",
+"Startus Rooftop Lounge",
+"Concourse",
+"The Barbary",
+"NOTO ",
+"Independence Beer Garden",
+"Brasils ",
+"Cuba Libre Restaurant & Rum Bar",
+"Voyeur ",
+"Bamboo Bar",
+"Pulse",
 ];
-const city = "Miami, FL";
+const city = "Philadelphia, PA";
+const file = "./output/philadelphia.json"
 
 console.log(`${city}:\n\t${places.join("\n\t")}`);
 
