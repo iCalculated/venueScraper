@@ -168,26 +168,21 @@ const write_to_file = (content, file) => {
 const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
-    "Silk City Diner",
-"The Dolphin Tavern ",
-"Startus Rooftop Lounge",
-"Concourse",
-"The Barbary",
-"NOTO ",
-"Independence Beer Garden",
-"Brasils ",
-"Cuba Libre Restaurant & Rum Bar",
-"Voyeur ",
-"Bamboo Bar",
-"Pulse",
+    "Tribe",
+    "The Lipstick Lounge",
+    "Mercy Lounge",
+    "Tootsie's Orchid Lounge",
+    "Station Inn",
+    "Main Street Music ",
+    "Ibiza",
 ];
-const city = "Philadelphia, PA";
-const file = "./output/philadelphia.json"
+const city = "Nashville, TN";
+const file = "./output/test.json"
 
 console.log(`${city}:\n\t${places.join("\n\t")}`);
 
 search_list(places, city)
     .then(results => results.map(format))
     .then(JSON.stringify)
-    .then(text => write_to_file(text, './miami.json'));
+    .then(text => write_to_file(text, file));
 //scrape_to_CSV(places, city, './export.csv')
