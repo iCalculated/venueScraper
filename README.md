@@ -6,6 +6,15 @@ The name is pretty self-explanatory, leverages the `yelp-fusion` API to get info
 
 ## Installation
 
+### NPM
+
+```shell
+npm install -g scrapethenslide
+```
+
+At which point `rrrr` will (hopefully) be available.
+
+### Source
 ```shell
 git clone https://github.com/iCalculated/venueScraper.git
 cd venueScraper
