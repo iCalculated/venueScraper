@@ -21,10 +21,21 @@ To get a key, follow the steps [here](https://www.yelp.com/developers/documentat
 ## Usage
 
 ```shell
-node scraper.js
+rrrr
+    --input: [id (default), name], venue input format
+    --format: [json (default), csv, hours], output format
+    --city: city of venues, required if input=name
+    --outfile: file to write to (default: generates from city or output.json)
+    names || ids
 ```
 
-Currently, configuration is done by putting venue names in the `places` array, setting `city` to the intended city, and an outfile (`JSON`) is indicated by file. Those should become arguments or something shortly.
+Example:
+
+```
+rrrr --city "New Orleans, LA" --format=hours "JF-z1ORPdnduyfQ0Vy0zuQ" "0eP5RJNSsSYdPvUY3ZbTvw"                        
+```
+
+Gets the hours for the Gold Mine Saloon and the Cat's Meow. Note that the `city` flag is optional and is only used to generate the outfile name. Could be replaced with `--outfile output/LA_new_orleans.json`.
 
 The Yelp API imposes some [limitations on usage](https://www.yelp.com/developers/documentation/v3/rate_limiting). The scraper performs requests sequentially to avoid triggering the [QPS limit](https://www.yelp.com/developers/documentation/v3/qps_rate_limiting) and will likely not be impacted by the 5000 requests/day limit assuming moderate use.
 

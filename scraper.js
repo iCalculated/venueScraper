@@ -47,13 +47,6 @@ if (argv.input == "name") {
         process.exit();
     }
 }
-console.log(argv);
-
-const places = [
-    "Goldmine Saloon",
-];
-const city = "New Orleans, LA";
-
 if (argv.city) {
     console.log(chalk.grey(`${argv.city}:\n\t${argv._.join("\n\t")}`));
 }
