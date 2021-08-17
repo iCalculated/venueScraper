@@ -30,5 +30,7 @@ The Yelp API imposes some [limitations on usage](https://www.yelp.com/developers
 
 ## TODO
 
-- Create CLI tools
-- Accept venue and function selection as command-line arguments
+- [X] Create CLI tools
+- [X] Accept venue and function selection as command-line arguments
+- [ ] Refactor CLI args
+- [ ] CLI help

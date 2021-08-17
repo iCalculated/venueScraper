@@ -67,8 +67,8 @@ exports.search_list = async (places, city) => {
  */
 exports.search_id_list = async (ids) => {
     const results = [];
-    for (const place of places) {
-        const result = await search_id(ids);
+    for (const id of ids) {
+        const result = await id_search(id);
         if (result) {
             results.push(result);
         }

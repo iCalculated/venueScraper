@@ -54,9 +54,14 @@ const places = [
 ];
 const city = "New Orleans, LA";
 
-console.log(chalk.grey(`${city}:\n\t${places.join("\n\t")}`));
+if (argv.city) {
+    console.log(chalk.grey(`${argv.city}:\n\t${argv._.join("\n\t")}`));
+}
+else {
+    console.log(chalk.grey(`${argv._.join("\n")}`));
+}
 
-argv.input()
+input[argv.input]()
     .then(results => results.map(
         formats[argv.format]
     ))
