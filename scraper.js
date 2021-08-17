@@ -165,10 +165,14 @@ const write_to_file = (content, file) => {
     })
 };
 
-const file_name_from_city = (city) => {
-    return city.toLowerCase()
+const file_name_from_city = (place) => {
+    const [city, state] = place.split(', ');
+    return  "./output/" + 
+            (state ? state + "_" : "") + 
+            city.toLowerCase()
                .replace(/ /g,"_")
-               .replace(/\W/g, '');
+               .replace(/\W/g, '') +
+            ".json";
 };
 
 const client = yelp.client(process.env.YELP_API_KEY)
@@ -188,10 +192,6 @@ const city = "New Orleans, LA";
 //const file = "./output/new_orleans.json"
 
 console.log(`${city}:\n\t${places.join("\n\t")}`);
-
-console.log(file_name_from_city(city));
-
-process.exit()
 
 search_list(places, city)
     .then(results => results.map(format))
