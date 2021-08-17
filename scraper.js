@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 'use strict';
 
 const yelp = require('yelp-fusion');
@@ -30,7 +31,7 @@ const search = async (name, city) => {
         term: name,
         location: city,
         limit: 1,
-    })
+    });
     if (response.jsonBody.businesses[0]) {
         const id = response.jsonBody.businesses[0].id;
         const search_result = await client.business(id)
@@ -180,7 +181,7 @@ const format_hours_update = ({hours, id}) => {
 const format_hours = (hours) => {
     const formatted_hours = Array(7).fill(null);
     if (hours) {
-        // hours is an array of opening schedules 
+        // hours is an array of opening schedules (not days!)
         hours
             // check for regular schedule (no others exist yet)
             // and take first (should be only)
