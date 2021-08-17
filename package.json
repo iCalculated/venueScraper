@@ -1,7 +1,7 @@
 {
-  "name": "venuescraper",
+  "name": "Slide Venue Scraper",
   "version": "1.0.0",
-  "description": "",
+  "description": "Scrape venue data from yelp-fusion",
   "main": "scraper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/iCalculated/venueScraper.git"
   },
-  "author": "",
+  "author": "Sasha Hydrie",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/iCalculated/venueScraper/issues"
