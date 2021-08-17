@@ -29,3 +29,16 @@ exports.search = async (name, city) => {
         console.log(`${name} not found.`);
     }
 };
+
+/**
+ * 
+ * @param {string} id, yelp id, metadata.yelp_id
+ * @returns JSON containing venue properties 
+ */
+exports.id_search = async (id) => {
+    return response = await client.business(id)
+        .then(result => result.jsonBody)
+        .catch(err => {
+            console.error(err);
+        });
+};
