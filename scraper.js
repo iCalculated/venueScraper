@@ -15,14 +15,26 @@ const { file_name_from_city,
         write_to_file,
 } = require('./utils/helpers');
 
-if (!argv.input) {
+// defaults
+if (!argv.format) {
     argv.format = "default";
 }
 if (!argv.input) {
     argv.input = "id"
 }
-if (argv.input = "id") {
-    argv.place !== "undefined" ? console.error(chalk.red("Place is not being used.")) : none ;
+if (!argv.outfile) {
+    if (argv.place) {
+        argv.outfile = file_name_from_city(argv.place);
+    }
+    else {
+        argv.outfile = "./output/out.json";
+    }
+}
+if (argv.input == "name") {
+    if (argv.place == null) { 
+        console.error(chalk.red("Place is required."));
+        process.exit();
+    }
 }
 console.log(argv);
 
@@ -38,7 +50,7 @@ const places = [
 ];
 const city = "New Orleans, LA";
 
-console.log(`${city}:\n\t${places.join("\n\t")}`);
+console.log(chalk.grey(`${city}:\n\t${places.join("\n\t")}`));
 
 search_list(places, city)
     .then(results => results.map(format_hours_update))
