@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 'use strict';
 
-const yelp = require('yelp-fusion');
 const fs = require('fs');
-const status = require('dotenv').config()
 const { v4: uuidv4 } = require('uuid');
 var { tzOffsetAt, init: tzInit } = require('tzwhere');
+
+const { search } = require("./utils.js")
 
 // gymastics to silence tzInit's print statements.
 const log = console.log;
@@ -15,33 +15,6 @@ tzInit();
 }
 console.log = log;
 
-// check for a .env error
-if (status.error) {
-    throw result.error
-}
-
-/**
- * 
- * @param {string} name, venue name,
- * @param {string} city, venue city, (long-lat can be used instead)
- * @returns JSON containing venue properties 
- */
-const search = async (name, city) => {
-    const response = await client.search({
-        term: name,
-        location: city,
-        limit: 1,
-    });
-    if (response.jsonBody.businesses[0]) {
-        const id = response.jsonBody.businesses[0].id;
-        const search_result = await client.business(id)
-            .then(result => result.jsonBody);
-        return search_result
-    }
-    else {
-        console.log(`${name} not found.`);
-    }
-};
 
 /**
  * 
@@ -255,8 +228,6 @@ const file_name_from_city = (place) => {
                .replace(/\W/g, '') +
             ".json";
 };
-
-const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
     "Goldmine Saloon",
