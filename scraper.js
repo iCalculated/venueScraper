@@ -8,42 +8,46 @@ const { search_list,
 } = require("./utils/yelp");
 const { format,
         format_hours_update,
-        format_csv: csv_format,
+        format_csv,
 } = require('./utils/formatters');
 const { file_name_from_city,
-        convert_to_CSV,
         write_to_file,
 } = require('./utils/helpers');
 
+const formats = {
+    "default": format,
+    "json": format,
+    "csv": format_csv,
+    "hours": format_hours_update,
+};
+// lazily-evaluated search functions
+const input = {
+    "default": () => search_id_list(argv._, argv.city),
+    "id": () => search_id_list(argv._),
+    "name": () => search_list(argv._, argv.city),
+}
 // defaults
 if (!argv.format) {
     argv.format = "default";
 }
 if (!argv.input) {
-    argv.input = "id"
+    argv.input = "default"
 }
 if (!argv.outfile) {
-    if (argv.place) {
-        argv.outfile = file_name_from_city(argv.place);
+    if (argv.city) {
+        argv.outfile = file_name_from_city(argv.city);
     }
     else {
         argv.outfile = "./output/out.json";
     }
 }
 if (argv.input == "name") {
-    if (argv.place == null) { 
-        console.error(chalk.red("Place is required."));
+    if (argv.city == null) { 
+        console.error(chalk.red("City is required."));
         process.exit();
     }
 }
 console.log(argv);
-
-const scrape_to_CSV = (places, city, file) => {
-    search_list(places, city)
-        .then(results => results.map(csv_format))
-        .then(convert_to_CSV)
-        .then(text => write_to_file(text, file));
-};
 
 const places = [
     "Goldmine Saloon",
@@ -52,12 +56,11 @@ const city = "New Orleans, LA";
 
 console.log(chalk.grey(`${city}:\n\t${places.join("\n\t")}`));
 
-search_list(places, city)
-    .then(results => results.map(format_hours_update))
+argv.input()
+    .then(results => results.map(
+        formats[argv.format]
+    ))
     .then(JSON.stringify)
     .then(text => {
-        const outfile = (typeof file !== "undefined" && file) 
-            ? file 
-            : file_name_from_city(city);
-        write_to_file(text, outfile);
+        write_to_file(text, argv.outfile);
     });
