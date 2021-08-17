@@ -21,15 +21,19 @@ To get a key, follow the steps [here](https://www.yelp.com/developers/documentat
 ## Usage
 
 ```shell
-rrrr
-    --names (alias -n): indicate that the input will be venue names (rather than yelp ids)
-    --city: city of venues, required if `names`
-    --format: [venue json (default), csv, hours], output format
-    --outfile: file to write to (default: generates from city if given or just `output.json`)
-    --help (alias -h)
-    infile || list
+rrrr [options] [files || list...]
 ```
 
+**Flags:**
+
+```
+Flags:
+  -h, --help      show this help message.
+  -n, --names     use venue names instead of yelp-fusion IDs.
+  --city          required with -n, the city the venues are in.
+  --format        how to format output (JSON, CSV, hours).
+  --outfile       file to write to, out.json by default without --city.
+```
 ### Examples:
 
 ```
