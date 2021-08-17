@@ -20,7 +20,7 @@ if (status.error) {
 const search = async (name, city) => {
     const response = await client.search({
         term: name,
-        location: city, 
+        location: city,
         limit: 1,
     });
     if (response.jsonBody.businesses[0]) {
@@ -179,14 +179,6 @@ const client = yelp.client(process.env.YELP_API_KEY)
 
 const places = [
     "Goldmine Saloon",
-    "Bourbon Heat",
-    "The World Famous Cat's Meow",
-    "The Beach on Bourbon ",
-    "Bourbon Pub Parade ",
-    "Republic New Orleans",
-    "The Metropolitan Nightclub",
-    "The Maison",
-    "The Boot",
 ];
 const city = "New Orleans, LA";
 //const file = "./output/new_orleans.json"
@@ -197,7 +189,7 @@ search_list(places, city)
     .then(results => results.map(format))
     .then(JSON.stringify)
     .then(text => {
-        if (file) {
+        if (typeof file !== "undefined" || file) {
             write_to_file(text, file);
         }
         else {
