@@ -68,7 +68,9 @@ exports.search_list = async (places, city) => {
 exports.search_id_list = async (ids) => {
     const results = [];
     for (const id of ids) {
-        const result = await id_search(id);
+        const result = await id_search(id).catch(err => {
+            console.error(err);
+         });
         if (result) {
             results.push(result);
         }
