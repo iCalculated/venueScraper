@@ -30,7 +30,7 @@ const search = async (name, city) => {
         term: name,
         location: city,
         limit: 1,
-    });
+    })
     if (response.jsonBody.businesses[0]) {
         const id = response.jsonBody.businesses[0].id;
         const search_result = await client.business(id)
@@ -40,6 +40,19 @@ const search = async (name, city) => {
     else {
         console.log(`${name} not found.`);
     }
+};
+
+/**
+ * 
+ * @param {string} id, yelp id, metadata.yelp_id
+ * @returns JSON containing venue properties 
+ */
+const id_search = async (id) => {
+    return response = await client.business(id)
+        .then(result => result.jsonBody)
+        .catch(err => {
+            console.error(err);
+        });
 };
 
 /**
@@ -125,29 +138,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
     });
     // sugar to make a set into an array
     const venue_type = [...type_set];
-
-    const formatted_hours = Array(7).fill(null);
-    if (hours) {
-        // hours is an array of opening schedules 
-        hours
-            // check for regular schedule (no others exist yet)
-            // and take first (should be only)
-            .filter(hours => hours.hours_type == 'REGULAR')[0]
-            // hours contains extraneous stuff like is_open, so just take schedule
-            .open
-            // format hours according to the Venue schema
-            .forEach(day_schedule => {
-                formatted_hours[day_schedule.day] = { 
-                    open: day_schedule.start.slice(0,2) + ":" + day_schedule.start.slice(2), 
-                    close: day_schedule.end.slice(0,2) + ":" + day_schedule.end.slice(2), 
-                };
-            });
-
-        // match day indexing
-        formatted_hours.unshift(
-            formatted_hours.pop()
-        );
-    }
+    const formatted_hours = format_hours(hours);
 
     // offset in milliseconds to hours
     const gmt_offset = tzOffsetAt(coordinates.latitude, coordinates.longitude) / 3600000;
@@ -177,6 +168,39 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
             tags,
         }
     };
+};
+
+const format_hours_update = ({hours, id}) => {
+    return {
+        hours: format_hours(hours),
+        metadata: { yelp_id: id },
+    }
+};
+
+const format_hours = (hours) => {
+    const formatted_hours = Array(7).fill(null);
+    if (hours) {
+        // hours is an array of opening schedules 
+        hours
+            // check for regular schedule (no others exist yet)
+            // and take first (should be only)
+            .filter(hours => hours.hours_type == 'REGULAR')[0]
+            // hours contains extraneous stuff like is_open, so just take schedule
+            .open
+            // format hours according to the Venue schema
+            .forEach(day_schedule => {
+                formatted_hours[day_schedule.day] = { 
+                    open: day_schedule.start.slice(0,2) + ":" + day_schedule.start.slice(2), 
+                    close: day_schedule.end.slice(0,2) + ":" + day_schedule.end.slice(2), 
+                };
+            });
+
+        // match day indexing
+        formatted_hours.unshift(
+            formatted_hours.pop()
+        );
+    }
+    return formatted_hours;
 };
 
 /**
@@ -242,14 +266,11 @@ const city = "New Orleans, LA";
 console.log(`${city}:\n\t${places.join("\n\t")}`);
 
 search_list(places, city)
-    .then(results => results.map(format))
+    .then(results => results.map(format_hours_update))
     .then(JSON.stringify)
     .then(text => {
-        if (typeof file !== "undefined" || file) {
-            write_to_file(text, file);
-        }
-        else {
-            write_to_file(text, file_name_from_city(city))
-        }
+        const outfile = (typeof file !== "undefined" && file) 
+            ? file 
+            : file_name_from_city(city);
+        write_to_file(text, outfile);
     });
-//scrape_to_CSV(places, city, './export.csv')
