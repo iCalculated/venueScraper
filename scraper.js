@@ -16,7 +16,7 @@ const { file_name_from_city,
 } = require('./utils/helpers');
 
 const formats = {
-    "default": format,
+    "default": format, // Venue schema
     "json": format,
     "csv": format_csv,
     "hours": format_hours_update,
@@ -24,9 +24,6 @@ const formats = {
 // defaults
 if (!argv.format) {
     argv.format = "default";
-}
-if (!argv.input) {
-    argv.input = "default"
 }
 if (!argv.outfile) {
     if (argv.city) {
@@ -36,11 +33,16 @@ if (!argv.outfile) {
         argv.outfile = "./output/out.json";
     }
 }
+// Failure conditions
 if (argv.input == "name") {
     if (argv.city == null) { 
         console.error(chalk.red("City is required."));
         process.exit();
     }
+}
+if (argv._.length == 0) {
+    console.error(chalk.red("Must provide infile or list"));
+    process.exit();
 }
 
 const search_terms = argv._.map(parse_item).flat();
@@ -51,10 +53,18 @@ const search_function = argv.names ?
     () => search_id_list(search_terms);
 
 if (argv.city) {
-    console.log(chalk.grey(`\n${chalk.yellow("PLACES")}\n${argv.city}:\n\t${search_terms.join("\n\t")}\n`));
+    console.log(chalk.grey(`\n
+                            ${argv.city}\n
+                            ${chalk.yellow("PLACES")}
+                            \n\t
+                                ${search_terms.join("\n\t")}
+                            \n`));
 }
 else {
-    console.log(chalk.grey(`\n${chalk.yellow("IDs")}\n${search_terms.join("\n")}\n`));
+    console.log(chalk.grey(`\n
+                            ${chalk.yellow("IDs")}\n
+                            ${search_terms.join("\n")}
+                            \n`));
 }
 
 search_function()
