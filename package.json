@@ -1,5 +1,5 @@
 {
-  "name": "Slide Venue Scraper",
+  "name": "scrapethenslide",
   "version": "1.0.0",
   "description": "Scrape venue data from yelp-fusion",
   "main": "scraper.js",
