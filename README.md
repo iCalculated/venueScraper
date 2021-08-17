@@ -2,6 +2,8 @@
 
 The name is pretty self-explanatory, leverages the `yelp-fusion` API to get information on given venues.
 
+![A screenshot of usage](rrrr.png)
+
 ## Installation
 
 ```shell
@@ -52,11 +54,6 @@ Given an `infile` of venue names in New Orleans, will return JSON output providi
 
 The Yelp API imposes some [limitations on usage](https://www.yelp.com/developers/documentation/v3/rate_limiting). The scraper performs requests sequentially to avoid triggering the [QPS limit](https://www.yelp.com/developers/documentation/v3/qps_rate_limiting) and will likely not be impacted by the 5000 requests/day limit assuming moderate use.
 
-## TODO
+## Trivia
 
-- [X] Create CLI tools
-- [X] Accept venue and function selection as command-line arguments
-- [X] Input ids from file
-- [X] Refactor CLI args
-- [ ] CLI help
-- [ ] alias
+I came up with the invocation `rrrr` at 200.
