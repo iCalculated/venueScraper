@@ -12,6 +12,7 @@ const { format,
 } = require('./utils/formatters');
 const { file_name_from_city,
         write_to_file,
+        read_list_from_file,
 } = require('./utils/helpers');
 
 const formats = {
@@ -20,12 +21,6 @@ const formats = {
     "csv": format_csv,
     "hours": format_hours_update,
 };
-// lazily-evaluated search functions
-const input = {
-    "default": () => search_id_list(argv._, argv.city),
-    "id": () => search_id_list(argv._),
-    "name": () => search_list(argv._, argv.city),
-}
 // defaults
 if (!argv.format) {
     argv.format = "default";
@@ -54,7 +49,13 @@ else {
     console.log(chalk.grey(`${argv._.join("\n")}`));
 }
 
-input[argv.input]()
+// lazily-evaluated search functions
+const search_function = argv.names ? 
+    () => search_list(argv._, argv.city) :
+    () => search_id_list(argv._);
+
+console.log(argv);
+search_function()
     .then(results => results.map(
         formats[argv.format]
     ))

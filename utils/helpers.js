@@ -44,3 +44,9 @@ exports.write_to_file = (content, file) => {
         }
     })
 };
+
+exports.read_list_from_file = (file) => {
+    fs.readFile(file, (content) => {
+        return content.split("\n");
+    })
+};
