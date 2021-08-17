@@ -6,6 +6,7 @@ const status = require('dotenv').config()
 const { v4: uuidv4 } = require('uuid');
 var { tzOffsetAt, init: tzInit } = require('tzwhere');
 
+// gymastics to silence tzInit's print statements.
 const log = console.log;
 {
 console.log = () => {};
@@ -13,10 +14,17 @@ tzInit();
 }
 console.log = log;
 
+// check for a .env error
 if (status.error) {
     throw result.error
 }
 
+/**
+ * 
+ * @param {string} name, venue name,
+ * @param {string} city, venue city, (long-lat can be used instead)
+ * @returns JSON containing venue properties 
+ */
 const search = async (name, city) => {
     const response = await client.search({
         term: name,
@@ -34,6 +42,12 @@ const search = async (name, city) => {
     }
 };
 
+/**
+ * 
+ * @param {Array<string>} places, venue names
+ * @param {string} city, (shared) venue city 
+ * @returns array of JSON results
+ */
 const search_list = async (places, city) => {
     const results = [];
     for (const place of places) {
@@ -45,6 +59,13 @@ const search_list = async (places, city) => {
     return results;
 }
 
+/**
+ * DEPRECATED 
+ * @param {venue} venue 
+ * @returns CSV formatted venue
+ * 
+ * Destructures a venue then reformats it for CSV usage
+ */
 const csv_format = ({name, location, categories, hours, image_url, coordinates, price, phone, photos})=> {
     const formatted_hours = Array(7).fill("null");
 
@@ -82,9 +103,19 @@ const csv_format = ({name, location, categories, hours, image_url, coordinates, 
     };
 };
 
+/**
+ * 
+ * @param {venue} venue 
+ * @returns JSON formatted venue
+ * 
+ * Destructures a venue then reformats it for JSON usage
+ * retains only reelvant fields 
+ */
 const format = ({name, location, categories, hours, coordinates, price, phone, photos, id})=> {
+    // convert tags to short forms rather than human-facing, e.g. "beergarden" vs "Beer Garden"
     const tags = categories.map(tag => tag.alias);
     const type_set = new Set();
+    // hack to get venue type from tags
     tags.forEach(tag => {
         ["bar","club","lounge","restaurant","garden"]
             .filter(type => tag.includes(type))
@@ -92,13 +123,19 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
                 type_set.add(type[0].toUpperCase() + type.slice(1));
             })
     });
+    // sugar to make a set into an array
     const venue_type = [...type_set];
 
     const formatted_hours = Array(7).fill(null);
     if (hours) {
+        // hours is an array of opening schedules 
         hours
+            // check for regular schedule (no others exist yet)
+            // and take first (should be only)
             .filter(hours => hours.hours_type == 'REGULAR')[0]
+            // hours contains extraneous stuff like is_open, so just take schedule
             .open
+            // format hours according to the Venue schema
             .forEach(day_schedule => {
                 formatted_hours[day_schedule.day] = { 
                     open: day_schedule.start.slice(0,2) + ":" + day_schedule.start.slice(2), 
@@ -112,6 +149,7 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         );
     }
 
+    // offset in milliseconds to hours
     const gmt_offset = tzOffsetAt(coordinates.latitude, coordinates.longitude) / 3600000;
 
     return {
@@ -134,12 +172,18 @@ const format = ({name, location, categories, hours, coordinates, price, phone, p
         metadata: {
             yelp_id: id,
             price,
+            // take only the last 10 digits of phone, as in schema
             phone: phone.replace(/[^\d]/g,"").slice(-10),
             tags,
         }
     };
 };
 
+/**
+ * 
+ * @param {Array<Object>} objectArray
+ * @returns string in CSV format
+ */
 const convert_to_CSV = objectArray => {
     const array = [Object.keys(objectArray[0])].concat(objectArray)
     return array.map(row => {
@@ -156,15 +200,27 @@ const scrape_to_CSV = (places, city, file) => {
         .then(text => write_to_file(text, file));
 };
 
+/**
+ * 
+ * @param {string} content, thing to write
+ * @param {string} file, outfile
+ * 
+ * Not rocket science, writes if it can, errors otherwise
+ */
 const write_to_file = (content, file) => {
     fs.writeFile(file, content, err => {
         if (err) {
-        console.error(err)
-        return
+            console.error(err)
+            return
         }
     })
 };
 
+/**
+ * 
+ * @param {string} place, city
+ * @returns name based on city and state (if provided) 
+ */
 const file_name_from_city = (place) => {
     const [city, state] = place.split(', ');
     return  "./output/" + 
