@@ -42,3 +42,37 @@ exports.id_search = async (id) => {
             console.error(err);
         });
 };
+
+/**
+ * 
+ * @param {Array<string>} places, venue names
+ * @param {string} city, (shared) venue city 
+ * @returns array of JSON results
+ */
+exports.search_list = async (places, city) => {
+    const results = [];
+    for (const place of places) {
+        const result = await search(place, city);
+        if (result) {
+            results.push(result);
+        }
+    }
+    return results;
+}
+
+/**
+ * 
+ * @param {Array<string>} ids, venue yelp ids
+ * @returns array of JSON results
+ */
+exports.search_id_list = async (ids) => {
+    const results = [];
+    for (const place of places) {
+        const result = await search_id(ids);
+        if (result) {
+            results.push(result);
+        }
+    }
+    return results;
+}
+
