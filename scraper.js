@@ -12,7 +12,7 @@ const { format,
 } = require('./utils/formatters');
 const { file_name_from_city,
         write_to_file,
-        read_list_from_file,
+        parse_item,
 } = require('./utils/helpers');
 
 const formats = {
@@ -51,10 +51,10 @@ else {
 
 // lazily-evaluated search functions
 const search_function = argv.names ? 
-    () => search_list(argv._, argv.city) :
-    () => search_id_list(argv._);
+    () => search_list(search_terms, argv.city) :
+    () => search_id_list(search_terms);
 
-console.log(argv);
+Promise.all(argv._.map(parse_item)).then(console.log).then(process.exit); //.flat
 search_function()
     .then(results => results.map(
         formats[argv.format]

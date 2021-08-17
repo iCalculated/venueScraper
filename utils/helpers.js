@@ -45,8 +45,19 @@ exports.write_to_file = (content, file) => {
     })
 };
 
-exports.read_list_from_file = (file) => {
-    fs.readFile(file, (content) => {
+const read_list_from_file = async (file) => {
+    fs.readFile(file, "utf-8", (err, content) => {
+        if (err) {
+            console.log(chalk.red(err));
+            return err;
+        }
+        console.log(content);
         return content.split("\n");
     })
+};
+
+exports.parse_item = async (item) => {
+    const pain = await read_list_from_file(item);
+    console.log({pain});
+    return pain;
 };

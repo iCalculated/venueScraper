@@ -39,7 +39,7 @@ const id_search = async (id) => {
     return response = await client.business(id)
         .then(result => result.jsonBody)
         .catch(err => {
-            console.error(err);
+            console.error(`"${id}" not found.`);
         });
 };
 
@@ -68,9 +68,7 @@ exports.search_list = async (places, city) => {
 exports.search_id_list = async (ids) => {
     const results = [];
     for (const id of ids) {
-        const result = await id_search(id).catch(err => {
-            console.error(err);
-         });
+        const result = await id_search(id)
         if (result) {
             results.push(result);
         }
