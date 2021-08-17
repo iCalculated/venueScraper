@@ -49,13 +49,15 @@ else {
     console.log(chalk.grey(`${argv._.join("\n")}`));
 }
 
+const search_terms = argv._.map(parse_item).flat();
+console.log(search_terms);
+
 // lazily-evaluated search functions
 const search_function = argv.names ? 
-    () => search_list(search_terms, argv.city) :
-    () => search_id_list(search_terms);
+    (search_terms) => search_list(search_terms, argv.city) :
+    (search_terms) => search_id_list(search_terms);
 
-Promise.all(argv._.map(parse_item)).then(console.log).then(process.exit); //.flat
-search_function()
+search_function(search_terms)
     .then(results => results.map(
         formats[argv.format]
     ))

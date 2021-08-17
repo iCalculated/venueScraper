@@ -45,19 +45,14 @@ exports.write_to_file = (content, file) => {
     })
 };
 
-const read_list_from_file = async (file) => {
-    fs.readFile(file, "utf-8", (err, content) => {
-        if (err) {
-            console.log(chalk.red(err));
-            return err;
-        }
-        console.log(content);
-        return content.split("\n");
-    })
+const read_list_from_file = (file) => {
+    return fs.readFileSync(file, "utf-8")
+             .split("\n");
 };
 
-exports.parse_item = async (item) => {
-    const pain = await read_list_from_file(item);
-    console.log({pain});
-    return pain;
+exports.parse_item = (item) => {
+    if(!fs.existsSync(item)) {
+        return item
+    }
+    return read_list_from_file(item);
 };
