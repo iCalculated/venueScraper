@@ -29,13 +29,21 @@ rrrr
     names || ids
 ```
 
-Example:
+### Examples:
 
 ```
-rrrr --city "New Orleans, LA" --format=hours "JF-z1ORPdnduyfQ0Vy0zuQ" "0eP5RJNSsSYdPvUY3ZbTvw"                        
+rrrr infile
 ```
 
-Gets the hours for the Gold Mine Saloon and the Cat's Meow. Note that the `city` flag is optional and is only used to generate the outfile name. Could be replaced with `--outfile output/LA_new_orleans.json`.
+Given an `infile` of `yelp-id`s, will return JSON output matching the `Venue` schema.
+
+```
+rrrr --names --city "New Orleans, LA" --format hours infile
+```
+
+Given an `infile` of venue names in New Orleans, will return JSON output providing only `yelp-id` identifier and opening hours.
+
+### Yelp API
 
 The Yelp API imposes some [limitations on usage](https://www.yelp.com/developers/documentation/v3/rate_limiting). The scraper performs requests sequentially to avoid triggering the [QPS limit](https://www.yelp.com/developers/documentation/v3/qps_rate_limiting) and will likely not be impacted by the 5000 requests/day limit assuming moderate use.
 
