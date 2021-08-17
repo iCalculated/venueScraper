@@ -1,11 +1,9 @@
 #! /usr/bin/env node
 'use strict';
 
-const fs = require('fs');
-
-const { search, 
-        id_search,
-        search_list,
+const chalk = require('chalk');
+const argv = require('minimist')(process.argv.slice(2));
+const { search_list,
         search_id_list,
 } = require("./utils/yelp");
 const { format,
@@ -16,6 +14,17 @@ const { file_name_from_city,
         convert_to_CSV,
         write_to_file,
 } = require('./utils/helpers');
+
+if (!argv.input) {
+    argv.format = "default";
+}
+if (!argv.input) {
+    argv.input = "id"
+}
+if (argv.input = "id") {
+    argv.place !== "undefined" ? console.error(chalk.red("Place is not being used.")) : none ;
+}
+console.log(argv);
 
 const scrape_to_CSV = (places, city, file) => {
     search_list(places, city)

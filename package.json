@@ -17,12 +17,14 @@
   },
   "homepage": "https://github.com/iCalculated/venueScraper#readme",
   "dependencies": {
+    "chalk": "^4.1.2",
     "dotenv": "^10.0.0",
+    "minimist": "^1.2.5",
     "tzwhere": "^1.0.1",
     "uuid": "^8.3.2",
     "yelp-fusion": "^3.0.0"
   },
-  "bin": {  
-    "rrrr": "./scraper.js"  
+  "bin": {
+    "rrrr": "./scraper.js"
   }
 }

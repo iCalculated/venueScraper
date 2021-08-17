@@ -13,7 +13,7 @@ const client = yelp.client(process.env.YELP_API_KEY)
  * @param {string} city, venue city, (long-lat can be used instead)
  * @returns JSON containing venue properties 
  */
-exports.search = async (name, city) => {
+const search = async (name, city) => {
     const response = await client.search({
         term: name,
         location: city,
@@ -35,7 +35,7 @@ exports.search = async (name, city) => {
  * @param {string} id, yelp id, metadata.yelp_id
  * @returns JSON containing venue properties 
  */
-exports.id_search = async (id) => {
+const id_search = async (id) => {
     return response = await client.business(id)
         .then(result => result.jsonBody)
         .catch(err => {
