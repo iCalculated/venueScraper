@@ -21,6 +21,20 @@ const formats = {
     "csv": format_csv,
     "hours": format_hours_update,
 };
+// help
+if (argv.h || argv.help || (argv._.length == 0 && Object.keys(argv).length == 1)) {
+    console.log(chalk.underline.bold.underline.cyan("\nrrrr:"));
+    console.log(chalk.italic.yellow("  CLI utility to scrape venue data from the yelp-fusion API"));
+    console.log(chalk.bold.cyan("\nUsage:"));
+    console.log(chalk.cyan("  rrrr [options] [files || list...]"));
+    console.log(chalk.bold.cyan("\nFlags:"));
+    console.log(chalk.cyan("  -h, --help      show this help message."));
+    console.log(chalk.cyan("  -n, --names     use venue names instead of yelp-fusion IDs."));
+    console.log(chalk.cyan("  --city          required with -n, the city the venues are in."));
+    console.log(chalk.cyan("  --format        how to format output (JSON, CSV, hours)."));
+    console.log(chalk.cyan("  --outfile       file to write to, out.json by default without --city."));
+    process.exit();
+}
 // aliases
 if (argv.n) {
     argv.names == true;
@@ -34,7 +48,7 @@ if (!argv.outfile) {
         argv.outfile = file_name_from_city(argv.city);
     }
     else {
-        argv.outfile = "./output/out.json";
+        argv.outfile = "./out.json";
     }
 }
 // Failure conditions
