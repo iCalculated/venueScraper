@@ -1,4 +1,5 @@
 const fs = require('fs');
+const chalk = require('chalk');
 
 /**
  * 
@@ -54,5 +55,6 @@ exports.parse_item = (item) => {
     if(!fs.existsSync(item)) {
         return item
     }
+    console.log(chalk.yellow(`Reading from ${chalk.cyan(item)}`));
     return read_list_from_file(item);
 };

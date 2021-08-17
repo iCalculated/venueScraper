@@ -42,26 +42,27 @@ if (argv.input == "name") {
         process.exit();
     }
 }
-if (argv.city) {
-    console.log(chalk.grey(`${argv.city}:\n\t${argv._.join("\n\t")}`));
-}
-else {
-    console.log(chalk.grey(`${argv._.join("\n")}`));
-}
 
 const search_terms = argv._.map(parse_item).flat();
-console.log(search_terms);
 
 // lazily-evaluated search functions
 const search_function = argv.names ? 
-    (search_terms) => search_list(search_terms, argv.city) :
-    (search_terms) => search_id_list(search_terms);
+    () => search_list(search_terms, argv.city) :
+    () => search_id_list(search_terms);
 
-search_function(search_terms)
+if (argv.city) {
+    console.log(chalk.grey(`\n${chalk.yellow("PLACES")}\n${argv.city}:\n\t${search_terms.join("\n\t")}\n`));
+}
+else {
+    console.log(chalk.grey(`\n${chalk.yellow("IDs")}\n${search_terms.join("\n")}\n`));
+}
+
+search_function()
     .then(results => results.map(
         formats[argv.format]
     ))
     .then(JSON.stringify)
     .then(text => {
+        console.log(chalk.yellow(`Logged to ${chalk.cyan(argv.outfile)}`));
         write_to_file(text, argv.outfile);
     });
