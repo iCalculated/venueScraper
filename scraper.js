@@ -21,6 +21,10 @@ const formats = {
     "csv": format_csv,
     "hours": format_hours_update,
 };
+// aliases
+if (argv.n) {
+    argv.names == true;
+}
 // defaults
 if (!argv.format) {
     argv.format = "default";
@@ -53,18 +57,10 @@ const search_function = argv.names ?
     () => search_id_list(search_terms);
 
 if (argv.city) {
-    console.log(chalk.grey(`\n
-                            ${argv.city}\n
-                            ${chalk.yellow("PLACES")}
-                            \n\t
-                                ${search_terms.join("\n\t")}
-                            \n`));
+    console.log(chalk.grey(`\n${argv.city}\n${chalk.yellow("PLACES")}\n\t${search_terms.join("\n\t")}\n`));
 }
 else {
-    console.log(chalk.grey(`\n
-                            ${chalk.yellow("IDs")}\n
-                            ${search_terms.join("\n")}
-                            \n`));
+    console.log(chalk.grey(`\n${chalk.yellow("IDs")}\n${search_terms.join("\n")}\n`));
 }
 
 search_function()

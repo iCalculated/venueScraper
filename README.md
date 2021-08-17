@@ -22,11 +22,12 @@ To get a key, follow the steps [here](https://www.yelp.com/developers/documentat
 
 ```shell
 rrrr
-    --names: indicate that the input will be venue names (rather than yelp ids)
+    --names (alias -n): indicate that the input will be venue names (rather than yelp ids)
     --city: city of venues, required if `names`
     --format: [venue json (default), csv, hours], output format
-    --outfile: file to write to (default: generates from city or output.json)
-    names || ids
+    --outfile: file to write to (default: generates from city if given or just `output.json`)
+    --help (alias -h)
+    infile || list
 ```
 
 ### Examples:
@@ -51,6 +52,7 @@ The Yelp API imposes some [limitations on usage](https://www.yelp.com/developers
 
 - [X] Create CLI tools
 - [X] Accept venue and function selection as command-line arguments
-- [ ] Refactor CLI args
+- [X] Input ids from file
+- [X] Refactor CLI args
 - [ ] CLI help
-- [ ] Input ids from file
+- [ ] alias
