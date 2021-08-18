@@ -20,6 +20,7 @@
     "chalk": "^4.1.2",
     "dotenv": "^10.0.0",
     "minimist": "^1.2.5",
+    "request": "^2.88.2",
     "tzwhere": "^1.0.1",
     "uuid": "^8.3.2",
     "yelp-fusion": "^3.0.0"
